@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Channel - Nexora</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+--glass:rgba(255,255,255,0.07);
+--border:rgba(255,255,255,0.12);
+--accent:#00d2ff;
+}
+
+body{
+margin:0;
+background:radial-gradient(circle at top,#1a1a2e 0%,#050505 100%);
+color:white;
+font-family:'Segoe UI',sans-serif;
+padding-bottom:80px;
+}
+
+/* Top Nav */
+
+.top-nav{
+display:flex;
+align-items:center;
+gap:15px;
+padding:20px;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
+}
+
+.top-nav a{
+color:white;
+font-size:20px;
+text-decoration:none;
+}
+
+/* Glass Box */
+
+.glass-box{
+background:var(--glass);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+border-radius:25px;
+margin:25px 15px;
+padding:25px;
+}
+
+/* Channel Icon */
+
+.channel-icon{
+width:90px;
+height:90px;
+border-radius:50%;
+background:linear-gradient(45deg,#00d2ff,#9d50bb);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:35px;
+margin:auto;
+border:2px solid var(--border);
+}
+
+.upload-btn{
+display:block;
+margin:15px auto;
+text-align:center;
+color:var(--accent);
+font-size:14px;
+cursor:pointer;
+}
+
+/* Inputs */
+
+.input-group{
+margin-bottom:20px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+color:#ccc;
+}
+
+.input-group input,
+.input-group textarea{
+
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid var(--border);
+background:rgba(255,255,255,0.05);
+color:white;
+outline:none;
+}
+
+textarea{
+resize:none;
+height:90px;
+}
+
+/* Save Button */
+
+.save-btn{
+
+width:100%;
+padding:14px;
+border:none;
+border-radius:15px;
+background:linear-gradient(45deg,#00d2ff,#9d50bb);
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="top-nav">
+
+<a href="profile.html">
+<i class="fa-solid fa-arrow-left"></i>
+</a>
+
+<h3>Edit Channel</h3>
+
+</header>
+
+<div class="glass-box">
+
+<div class="channel-icon">
+<i class="fa-solid fa-user"></i>
+</div>
+
+<label class="upload-btn">
+<i class="fa-solid fa-camera"></i> Change Channel Logo
+<input type="file" hidden>
+</label>
+
+<div class="input-group">
+
+<label>Channel Name</label>
+<input type="text" placeholder="Enter channel name">
+
+</div>
+
+<div class="input-group">
+
+<label>Channel Description</label>
+<textarea placeholder="Write about your channel"></textarea>
+
+</div>
+
+<div class="input-group">
+
+<label>Channel Banner</label>
+<input type="file">
+
+</div>
+
+<button class="save-btn">
+<i class="fa-solid fa-floppy-disk"></i> Save Changes
+</button>
+
+</div>
+
+</body>
+</html>

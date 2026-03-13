@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Nexora - Classic Premium Reels</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background-color: #000; overflow: hidden; font-family: sans-serif;
+        }
+
+        /* --- SINGLE SWAP LOGIC --- */
+        .reels-container {
+            height: 100vh; overflow-y: scroll;
+            scroll-snap-type: y mandatory; scrollbar-width: none;
+        }
+        .reels-container::-webkit-scrollbar { display: none; }
+
+        .reel-video-container {
+            height: 100vh; width: 100%;
+            scroll-snap-align: start; scroll-snap-stop: always;
+            position: relative; background: #000;
+        }
+
+        video { height: 100%; width: 100%; object-fit: cover; }
+
+        /* Overlay */
+        .overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 20px; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+            display: flex; justify-content: space-between; align-items: flex-end;
+            padding-bottom: calc(30px + env(safe-area-inset-bottom));
+            z-index: 10;
+        }
+
+        .reel-details { flex: 1; color: white; }
+        .user-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .avatar { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            border: 2px solid white; background: #334155; cursor: pointer;
+        }
+        .username { font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* Subscribe Button */
+        .sub-btn { 
+            background: #3b82f6; color: white; font-size: 11px; 
+            padding: 5px 12px; border-radius: 5px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
+        }
+        .sub-btn.unsub { background: rgba(255,255,255,0.2); color: #fff; }
+
+        /* Side Actions */
+        .side-actions { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .action-item { text-align: center; color: white; cursor: pointer; }
+        .icon-box {
+            width: 48px; height: 48px; background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 5px;
+        }
+        .action-item span { font-size: 12px; font-weight: bold; }
+        .liked .icon-box { color: #ff4757; border-color: #ff4757; fill: #ff4757; }
+
+        /* Comment Modal */
+        #commentModal {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(25px);
+            border-top: 1px solid rgba(255,255,255,0.2); z-index: 1000;
+            transition: 0.4s ease; border-radius: 25px 25px 0 0;
+            display: flex; flex-direction: column; color: white;
+        }
+        #commentModal.open { bottom: 0; }
+        .modal-header { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; }
+        .close-btn { position: absolute; right: 20px; top: 12px; font-size: 20px; cursor: pointer; }
+        .comment-list { flex: 1; overflow-y: auto; padding: 20px; }
+        .input-area { padding: 15px; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .input-area input { flex: 1; background: rgba(255,255,255,0.1); border: none; padding: 12px; border-radius: 20px; color: white; outline: none; }
+
+        svg { width: 26px; height: 26px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <div class="reels-container" id="reelsMain">
+        
+        <div class="reel-video-container" id="vid1">
+            <video loop playsinline onclick="this.paused ? this.play() : this.pause()">
+                <source src="video1.mp4" type="video/mp4">
+            </video>
+            <div class="overlay">
+                <div class="reel-details">
+                    <div class="user-row">
+                        <div class="avatar" onclick="location.href='channel.html'"></div>
+                        <div class="username" onclick="location.href='channel.html'">Nexora_User1</div>
+                        <div class="sub-btn" onclick="handleSub(this)">Subscribe</div>
+                    </div>
+                    <div class="description">Har video ka apna count aur subscribe logic! ✨</div>
+                </div>
+                <div class="side-actions">
+                    <div class="action-item" onclick="handleLike(this)"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><span class="l-count">0</span></div>
+                    <div class="action-item" onclick="openComments('vid1')"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div><span class="c-count">0</span></div>
+                    <div class="action-item"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M18 16.08l-7.12-4.16c.05-.21.08-.43.08-.65s-.03-.44-.08-.65l7.12-4.16c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg></div><span>Share</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reel-video-container" id="vid2">
+            <video loop playsinline onclick="this.paused ? this.play() : this.pause()">
+                <source src="video2.mp4" type="video/mp4">
+            </video>
+            <div class="overlay">
+                <div class="reel-details">
+                    <div class="user-row">
+                        <div class="avatar" onclick="location.href='channel.html'"></div>
+                        <div class="username" onclick="location.href='channel.html'">Nexora_User2</div>
+                        <div class="sub-btn" onclick="handleSub(this)">Subscribe</div>
+                    </div>
+                    <div class="description">Ab swap karne par ek hi video upar jayega. ✅</div>
+                </div>
+                <div class="side-actions">
+                    <div class="action-item" onclick="handleLike(this)"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><span class="l-count">0</span></div>
+                    <div class="action-item" onclick="openComments('vid2')"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg></div><span class="c-count">0</span></div>
+                    <div class="action-item"><div class="icon-box"><svg viewBox="0 0 24 24"><path d="M18 16.08l-7.12-4.16c.05-.21.08-.43.08-.65s-.03-.44-.08-.65l7.12-4.16c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg></div><span>Share</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="commentModal">
+        <div class="modal-header">
+            <span>Comments</span>
+            <span class="close-btn" onclick="closeComments()">✕</span>
+        </div>
+        <div class="comment-list" id="commentList"></div>
+        <div class="input-area">
+            <input type="text" id="commentInput" placeholder="Add a comment...">
+            <button onclick="postComment()" style="background:#3b82f6; border:none; color:white; padding:10px 15px; border-radius:20px; font-weight:bold;">Post</button>
+        </div>
+    </div>
+
+    <script>
+        let videoStore = {
+            'vid1': { comments: [], likes: 0 },
+            'vid2': { comments: [], likes: 0 }
+        };
+        let activeVideoId = '';
+
+        function handleLike(el) {
+            let vidId = el.closest('.reel-video-container').id;
+            el.classList.toggle('liked');
+            let countSpan = el.querySelector('.l-count');
+            videoStore[vidId].likes = el.classList.contains('liked') ? videoStore[vidId].likes + 1 : videoStore[vidId].likes - 1;
+            countSpan.innerText = videoStore[vidId].likes;
+        }
+
+        function handleSub(btn) {
+            if(btn.innerText === "Subscribe") {
+                btn.innerText = "Subscribed";
+                btn.classList.add('unsub');
+            } else {
+                btn.innerText = "Subscribe";
+                btn.classList.remove('unsub');
+            }
+        }
+
+        function openComments(vidId) {
+            activeVideoId = vidId;
+            const list = document.getElementById('commentList');
+            list.innerHTML = '';
+            
+            if(videoStore[vidId].comments.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#64748b;">No comments yet.</p>';
+            } else {
+                videoStore[vidId].comments.forEach(c => {
+                    let d = document.createElement('div');
+                    d.style.marginBottom = "10px";
+                    d.innerHTML = `<b>You:</b> ${c}`;
+                    list.appendChild(d);
+                });
+            }
+            document.getElementById('commentModal').classList.add('open');
+        }
+
+        function closeComments() { document.getElementById('commentModal').classList.remove('open'); }
+
+        function postComment() {
+            const input = document.getElementById('commentInput');
+            if(input.value.trim() !== "") {
+                videoStore[activeVideoId].comments.push(input.value);
+                document.querySelector(`#${activeVideoId} .c-count`).innerText = videoStore[activeVideoId].comments.length;
+                input.value = "";
+                openComments(activeVideoId); // Refresh list
+            }
+        }
+
+        // Single Snap Scroll & Auto Play
+        const container = document.getElementById('reelsMain');
+        container.addEventListener('scroll', () => {
+            document.querySelectorAll('video').forEach(v => {
+                let rect = v.getBoundingClientRect();
+                if(rect.top >= 0 && rect.top < window.innerHeight / 2) v.play();
+                else v.pause();
+            });
+        });
+    </script>
+</body>
+</html>

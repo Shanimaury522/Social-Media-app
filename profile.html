@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexora Profile - Dark Glass</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+--glass:rgba(255,255,255,0.07);
+--border:rgba(255,255,255,0.12);
+--accent:#00d2ff;
+}
+
+body{
+margin:0;
+background:radial-gradient(circle at top,#1a1a2e 0%,#050505 100%);
+color:white;
+font-family:'Segoe UI',sans-serif;
+padding-bottom:100px;
+}
+
+.top-nav{
+display:flex;
+justify-content:space-between;
+padding:20px 25px;
+background:rgba(0,0,0,0.3);
+backdrop-filter:blur(10px);
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.top-nav a{
+color:#ccc;
+font-size:20px;
+text-decoration:none;
+}
+
+.profile-header{
+text-align:center;
+margin-top:20px;
+}
+
+.channel-icon{
+width:80px;
+height:80px;
+border-radius:50%;
+background:linear-gradient(45deg,var(--accent),#9d50bb);
+margin:0 auto 10px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+border:2px solid var(--border);
+}
+
+.channel-name{
+font-size:22px;
+font-weight:600;
+margin:5px 0;
+}
+
+.view-channel{
+color:var(--accent);
+text-decoration:none;
+font-size:14px;
+opacity:0.8;
+}
+
+.glass-box{
+background:var(--glass);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+border-radius:25px;
+margin:25px 15px;
+padding:20px;
+}
+
+.action-row{
+display:flex;
+justify-content:space-around;
+flex-wrap:wrap;
+gap:10px;
+padding-bottom:20px;
+border-bottom:1px solid var(--border);
+margin-bottom:15px;
+}
+
+.action-item{
+text-align:center;
+color:#eee;
+text-decoration:none;
+font-size:13px;
+}
+
+.action-item i{
+display:block;
+font-size:22px;
+margin-bottom:8px;
+color:var(--accent);
+}
+
+.menu-list{
+list-style:none;
+padding:0;
+margin:0;
+}
+
+.menu-item{
+display:flex;
+align-items:center;
+padding:15px 5px;
+border-bottom:1px solid rgba(255,255,255,0.05);
+text-decoration:none;
+color:#ddd;
+font-size:15px;
+}
+
+.menu-item i{
+width:35px;
+font-size:18px;
+color:#aaa;
+}
+
+.menu-item:last-child{
+border:none;
+}
+
+.playlist-box{
+background:rgba(255,255,255,0.03);
+border-radius:20px;
+padding:15px;
+margin-top:15px;
+}
+
+.playlist-title{
+font-size:16px;
+margin-bottom:15px;
+display:block;
+font-weight:600;
+}
+
+.playlist-item{
+display:flex;
+gap:15px;
+margin-bottom:12px;
+align-items:center;
+}
+
+.thumb-small{
+width:60px;
+height:40px;
+background:#333;
+border-radius:8px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.footer-nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+max-width:450px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+border:1px solid var(--border);
+border-radius:30px;
+display:flex;
+justify-content:space-around;
+padding:12px 0;
+}
+
+.footer-nav a{
+color:#888;
+font-size:18px;
+text-decoration:none;
+}
+
+.footer-nav .active{
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="top-nav">
+<a href="search.html"><i class="fa-solid fa-magnifying-glass"></i></a>
+<a href="wallet.html"><i class="fa-solid fa-wallet"></i></a>
+<a href="notifications.html"><i class="fa-solid fa-bell"></i></a>
+</header>
+
+<div class="profile-header">
+
+<div class="channel-icon">
+<i class="fa-solid fa-user"></i>
+</div>
+
+<div class="channel-name">
+Aapka Channel
+</div>
+
+<a href="view-channel.html" class="view-channel">
+View Channel <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i>
+</a>
+
+</div>
+
+<div class="glass-box">
+
+<div class="action-row">
+
+<a href="downloads.html" class="action-item">
+<i class="fa-solid fa-download"></i>
+Downloads
+</a>
+
+<a href="premium.html" class="action-item">
+<i class="fa-solid fa-crown"></i>
+Premium
+</a>
+
+<a href="settings.html" class="action-item">
+<i class="fa-solid fa-gear"></i>
+Settings
+</a>
+
+<a href="edit-channel.html" class="action-item">
+<i class="fa-solid fa-pen-to-square"></i>
+Edit Channel
+</a>
+
+</div>
+
+<div class="menu-list">
+
+<a href="#" class="menu-item">
+<i class="fa-solid fa-arrows-rotate"></i>
+Switch Account
+</a>
+
+<a href="#" class="menu-item">
+<i class="fa-brands fa-google"></i>
+Google Account
+</a>
+
+<a href="#" class="menu-item">
+<i class="fa-solid fa-user-secret"></i>
+Turn on Incognito
+</a>
+
+<a href="#" class="menu-item">
+<i class="fa-solid fa-share-nodes"></i>
+Share Channel
+</a>
+
+</div>
+
+<div class="playlist-box">
+
+<span class="playlist-title">
+Playlists
+</span>
+
+<a href="watch-later.html" class="menu-item">
+
+<div class="thumb-small">
+<i class="fa-solid fa-clock"></i>
+</div>
+
+Watch Later
+
+</a>
+
+<a href="liked-videos.html" class="menu-item">
+
+<div class="thumb-small">
+<i class="fa-solid fa-thumbs-up"></i>
+</div>
+
+Liked Videos
+
+</a>
+
+</div>
+
+</div>
+
+<nav class="footer-nav">
+
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+</a>
+
+<a href="reels.html">
+<i class="fa-solid fa-clapperboard"></i>
+</a>
+
+<a href="upload.html" style="background:#333;padding:10px;border-radius:50%;margin-top:-15px;border:1px solid var(--border);">
+<i class="fa-solid fa-plus" style="color:white;"></i>
+</a>
+
+<a href="subscription.html">
+<i class="fa-solid fa-gem"></i>
+</a>
+
+<a href="profile.html" class="active">
+<i class="fa-solid fa-user"></i>
+</a>
+
+</nav>
+
+</body>
+</html>

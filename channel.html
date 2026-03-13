@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Nexora - Full Screen Channel</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #020617; 
+            color: white; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* Container to allow full screen with safe area for notches */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+        }
+
+        /* --- Header / Banner Section --- */
+        .banner-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px; /* Thoda bada banner */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(2,6,23,1)), 
+                        url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=1000') center/cover;
+        }
+
+        .back-nav {
+            position: absolute;
+            top: env(safe-area-inset-top, 20px);
+            left: 15px;
+            z-index: 10;
+        }
+
+        .icon-circle {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+
+        /* --- Profile Section --- */
+        .profile-container {
+            margin-top: -60px;
+            padding: 0 20px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        .avatar-lg {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border: 5px solid #020617;
+            margin: 0 auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            object-fit: cover;
+        }
+
+        .name-heading { font-size: 26px; font-weight: 800; margin: 15px 0 5px; letter-spacing: -0.5px; }
+        .sub-count { font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
+
+        .btn-group {
+            display: flex; justify-content: center; gap: 12px; margin-bottom: 25px;
+        }
+
+        .primary-btn {
+            background: #ffffff; color: #000;
+            border: none; padding: 12px 45px;
+            border-radius: 30px; font-weight: 700;
+            font-size: 15px; cursor: pointer; transition: 0.3s;
+        }
+
+        .primary-btn.subscribed {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        /* --- Tabs --- */
+        .tab-nav {
+            display: flex;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .tab {
+            flex: 1; text-align: center;
+            padding: 15px 0; font-size: 14px;
+            font-weight: 600; color: #64748b;
+            cursor: pointer; transition: 0.3s;
+            position: relative;
+        }
+
+        .tab.active { color: #fff; }
+        .tab.active::after {
+            content: ''; position: absolute; bottom: 0; left: 25%;
+            width: 50%; height: 3px; background: #3b82f6;
+            border-radius: 10px; box-shadow: 0 0 10px #3b82f6;
+        }
+
+        /* --- Content Sections --- */
+        .tab-content {
+            padding: 15px;
+            flex: 1;
+            display: none;
+            animation: slideUp 0.4s ease;
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Video Grid Layout */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .v-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .v-preview {
+            width: 100%; aspect-ratio: 16/9;
+            background: #1e293b;
+        }
+
+        .v-meta { padding: 10px; }
+        .v-title { font-size: 13px; font-weight: 600; line-height: 1.4; margin-bottom: 5px; }
+        .v-details { font-size: 11px; color: #64748b; }
+
+        /* Shorts Grid */
+        .shorts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .short-item {
+            aspect-ratio: 9/16; background: #1e293b; border-radius: 10px;
+        }
+
+        svg { width: 22px; height: 22px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="banner-wrapper">
+        <div class="back-nav">
+            <div class="icon-circle" onclick="history.back()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <img src="https://via.placeholder.com/150" class="avatar-lg" alt="Profile">
+        <h1 class="name-heading">Nexora Creator</h1>
+        <p class="sub-count">@nexora_official • 2.45M Subscribers</p>
+        
+        <div class="btn-group">
+            <button id="subBtn" class="primary-btn" onclick="toggleSub()">Subscribe</button>
+            <div class="icon-circle">
+                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-nav">
+        <div class="tab active" onclick="switchTab(event, 'home-tab')">Home</div>
+        <div class="tab" onclick="switchTab(event, 'videos-tab')">Videos</div>
+        <div class="tab" onclick="switchTab(event, 'shorts-tab')">Shorts</div>
+    </div>
+
+    <div id="home-tab" class="tab-content active">
+        <h3 style="font-size: 16px; margin: 5px 0 15px;">Featured Video</h3>
+        <div class="v-item" style="grid-column: span 2; margin-bottom: 20px;" onclick="location.href='watch.html'">
+            <div class="v-preview" style="background: linear-gradient(45deg, #1e293b, #0f172a);"></div>
+            <div class="v-meta">
+                <div class="v-title" style="font-size: 16px;">Welcome to the Nexora Ecosystem - 2026 Vision</div>
+                <div class="v-details">2.1M views • 1 month ago</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="videos-tab" class="tab-content">
+        <div class="video-grid">
+            <div class="v-item"><div class="v-preview"></div><div class="v-meta"><div class="v-title">AI Coding</div><div class="v-details">40K views</div></div></div>
+            <div class="v-item"><div class="v-preview"></div><div class="v-meta"><div class="v-title">Glass UI Tips</div><div class="v-details">12K views</div></div></div>
+            <div class="v-item"><div class="v-preview"></div><div class="v-meta"><div class="v-title">Modern Web</div><div class="v-details">89K views</div></div></div>
+            <div class="v-item"><div class="v-preview"></div><div class="v-meta"><div class="v-title">Future Tech</div><div class="v-details">1M views</div></div></div>
+        </div>
+    </div>
+
+    <div id="shorts-tab" class="tab-content">
+        <div class="shorts-grid">
+            <div class="short-item"></div>
+            <div class="short-item"></div>
+            <div class="short-item"></div>
+            <div class="short-item"></div>
+            <div class="short-item"></div>
+            <div class="short-item"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function switchTab(event, tabId) {
+        // Hide all contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Deactivate all tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Show selected content and activate tab
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        
+        // Scroll slightly to header if needed
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    function toggleSub() {
+        const btn = document.getElementById('subBtn');
+        if(btn.innerText === "Subscribe") {
+            btn.innerText = "Subscribed";
+            btn.classList.add('subscribed');
+        } else {
+            btn.innerText = "Subscribe";
+            btn.classList.remove('subscribed');
+        }
+    }
+</script>
+
+</body>
+</html>
